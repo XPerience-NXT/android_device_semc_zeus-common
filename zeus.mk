@@ -18,21 +18,36 @@ COMMON_PATH := device/semc/zeus-common
 
 DEVICE_PACKAGE_OVERLAYS += device/semc/zeus-common/overlay
 
-# Wifi AP
-PRODUCT_PACKAGES += \
-    hostapd
-
 # Init files
 PRODUCT_COPY_FILES += \
     $(COMMON_PATH)/rootdir/init.board.rc:root/init.board.rc
 
-# Device settings
+# Configs
+PRODUCT_COPY_FILES += \
+    $(COMMON_PATH)/rootdir/system/etc/bluetooth/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf
+
+# Bluetooth
 PRODUCT_PACKAGES += \
-    DeviceSettings
+    btaddr
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.bluetooth.remote.autoconnect=true \
+    ro.bluetooth.request.master=true \
+    ro.qualcomm.bluetooth.dun=true \
+    ro.qualcomm.bluetooth.ftp=true
+
+# Wi-Fi
+$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4329/device-bcm.mk)
+
+PRODUCT_PACKAGES += \
+    dhcpcd.conf
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    wifi.interface=wlan0 \
+    wifi.supplicant_scan_interval=15
 
 # Common device properties
 PRODUCT_PROPERTY_OVERRIDES += \
-    wifi.interface=wlan0 \
     com.qc.hdmi_out=false
 
 # proprietary side of the board
